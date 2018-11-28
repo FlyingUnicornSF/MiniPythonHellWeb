@@ -1,14 +1,11 @@
 from flask import Flask
-app = Flask(__name__)
 import http.server
 import os
 
-
-class ServerException(Exception):
-  pass
+app = Flask(__name__)
 
 
-class RequestHandeler(http.server.BaseHTTPRequestHandler):
+
 
   def do_GET(self):
     try: 
@@ -51,6 +48,9 @@ class RequestHandeler(http.server.BaseHTTPRequestHandler):
     self.send_header("Content-Type", "text/html")
     self.send_header("Content-Length", str(len(content)))
     self.end_headers()
+    # wfile - Contains the output stream for writing a response back to the client. 
+    # Proper adherence to the HTTP protocol must be used when writing to this stream 
+    # in order to achieve successful interoperation with HTTP clients.
     self.wfile.write(content)
 
  #---------------------
