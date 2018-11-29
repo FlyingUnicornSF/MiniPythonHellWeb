@@ -36,7 +36,9 @@ class GenericClient(object):
             try:
                 response = r.json()
             except Exception as err:
-                raise ValueError('Invalid response; claiming to be json, but not: %s' % err.message)
+                #TODO: Gave error: instance of Exception has no message number
+                #raise ValueError('Invalid response; claiming to be json, but not: %s' % err.message)
+                raise ValueError('Invalid response; claiming to be json')
 
             result = response.get('result')
             error = response.get('error')
