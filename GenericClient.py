@@ -14,7 +14,7 @@ class GenericClient(object):
         self.url = url
 
     def call_func(self, func_name, params):
-        if not isinstance(func_name, basestring):
+        if not isinstance(func_name, str):
             raise ValueError('"func_name" must be a string')
         if not isinstance(params, list):
             raise ValueError('"params" must be an array')
