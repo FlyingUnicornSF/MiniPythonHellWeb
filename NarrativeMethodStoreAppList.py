@@ -27,6 +27,6 @@ def root():
     #if 'error' in resp_json:
         #raise Exception('oh no!')
     
-    print(resp_json['result'][0][0])
-    return render_template('index.html', resp_json=resp_json)
+    print(resp_json['result'][0][10])
+    return render_template('index.html', resp_json=resp_json['result'][0])
 

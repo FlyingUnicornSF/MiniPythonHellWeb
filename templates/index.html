@@ -4,7 +4,18 @@
 
 </head>
 <body>
-<p> yay! </P>
-{{resp_json}}
+<p> yay! in Turkish means spring, coil, bow, arch, string, coil spring, etc</P>
+    <div>
+    {% for item in resp_json %}
+        <div><a href="https://narrative.kbase.us/#catalog/apps/{{ item.id }}">
+            {% if item.icon %}
+            <img src="https://kbase.us/services/narrative_method_store/{{ item.icon.url }}" style="max-width: 85%; padding: 6px 3px 3px 8px; max-height: 85%;">
+            {% else %} 
+            No Image!!!<br>
+            {% endif %} 
+            Name: {{ item.name }}, Module Name: {{ item.module_name }} 
+        </a></div>
+    {% endfor %}  
+    </div>
 </body>
 </html>
