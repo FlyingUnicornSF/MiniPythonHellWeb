@@ -1,20 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    <link rel="stylesheet" href={{ url_for('static', filename='style.css') }}>
 </head>
 <body>
 <p> yay! in Turkish means spring, coil, bow, arch, string, coil spring, etc</P>
     <div>
+        Organize Apps By... https://stackoverflow.com/questions/22669342/passing-a-variable-into-python-from-jinja2-drop-down-menu
+        <select id="organized-by">
+            {% for activity in activities %}
+                <option value="{{ activity }}">{{ activity }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        {% import 'OrganizeBy.html' as forms %}
+        <dl>
+            <dt>Username</dt>
+            <dd>{{ OrganizeBy.input('username') }}</dd>
+            <dt>Password</dt>
+            <dd>{{ OrganizeBy.input('password', type='password') }}</dd>
+        </dl>
+        <p>{{ OrganizeBy.textarea('comment') }}</p>
+    </div>
+    <div>
     {% for item in resp_json %}
         <div><a href="https://narrative.kbase.us/#catalog/apps/{{ item.id }}">
             {% if item.icon %}
-            <img src="https://kbase.us/services/narrative_method_store/{{ item.icon.url }}" style="max-width: 85%; padding: 6px 3px 3px 8px; max-height: 85%;">
+            <img clas="icon-img" src="https://kbase.us/services/narrative_method_store/{{ item.icon.url }}" >
             {% else %} 
             No Image!!!<br>
             {% endif %} 
             Name: {{ item.name }}, Module Name: {{ item.module_name }} 
-        </a></div>
+            </a>
+        </div>
     {% endfor %}  
     </div>
 </body>
