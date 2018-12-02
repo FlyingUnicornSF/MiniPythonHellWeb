@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>dropdow menu</title>
+</head>
+<body>
+    {{ resp_json }} 
+    <form action="/organize_by_category" method=post id="dropdown-menu">
+        <select name="organize-by" id="organizeBy-select">
+            {% for option in options %}
+            <option value="{{ option }}">{{ option }}</option>  
+            {% endfor %}
+        </select>
+    </form>
+    <script>
+        let dropdown = document.querySelector('#organizeBy-select');
+        document.addEventListener('DOMContentLoaded',function() {
+            document.querySelector('select[name="organize-by"]').onchange=changeEventHandler;
+        },false);
+        
+        function changeEventHandler(event) {
+            // You can use “this” to refer to the selected element.
+            if(!event.target.value) alert('Please Select One');
+            else window.location.search = '?organize_by='+event.target.value;
+        }
+    </script>
+</body>
+</html>
