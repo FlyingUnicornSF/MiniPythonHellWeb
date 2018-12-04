@@ -1,5 +1,5 @@
 ''' $ export FLASK_APP=dropdown.py
-    $ flask run
+    $ FLASK_DEBUG=1 flask run
     https://stackoverflow.com/questions/22669342/passing-a-variable-into-python-from-jinja2-drop-down-menu
     https://stackoverflow.com/questions/11873576/how-to-get-value-from-dropdown-list
     
@@ -21,21 +21,49 @@ payload = {
     'params': [{}]
 }
 options = ['Organize by', 'Category', 'Module', 'Developer']
-
+# Python doesn't have switch case??? 
 @app.route('/', methods=['GET'])
 def get_apps():
-    print('ARGS!', request.args)
     resp = requests.post(_NarrativeMethodStore_url, data=json.dumps(payload))
     try:
         resp_json = resp.json()
     except ValueError as err:
         print(err)
-    #if 'error' in resp_json:
-        #raise Exception('oh no!')
-    print(resp_json['result'][0][10])
-    return render_template('dropdown.html', resp_json=resp_json['result'][0][10], options=options)
+    
+    option = request.args.get('organize_by')
+    organized_list = {}
+    if option == None:
+        organized_list = {
+            'All Apps:' : resp_json['result'][0]
+        }
+        print("NONE")
+    elif option == "Category":
+        organized_list = {}
+        # for app in resp_json['result'][0]:
+            # print(app['categories'])
+        for app in resp_json['result'][0]:
+            if app.get('categories') is not None:
+                # if categories exisit for an app, check if it's in the organized_list.
+                categories = app.get('categories')
+                for category in categories:
+                    if category not in organized_list:
+                        # if it is not alreay in the organized_list, then add category and the app associated. 
+                        organized_list[category] = [app]
+                    elif category and category in organized_list:
+                        # if category is already exisiting in the dictionay, then add the app to the list.
+                        arr = organized_list.get(category)
+                        arr.append(app)
+                        organized_list[category] = arr
+                    else:
+                        # This shouldn't happen.
+                        pass
 
-@app.route('/organize_by_category', methods=['POST'])
-# @app.route('/?organize_by=Category', methods=['GET'])
-def organize_by_category():
-    return 'oh nooooooo!'
+    elif option == "Module": 
+        print(option)
+    elif option == "Developer":
+        print(option)
+    else:
+        print("this shouldn't happen!")
+    
+    return render_template('index.html', options=options, organized_list=organized_list )
+

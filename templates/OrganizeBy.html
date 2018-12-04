@@ -1,8 +1,14 @@
-{% macro input(name, value='', type='text') -%}
-    <input type="{{ type }}" value="{{ value|e }}" name="{{ name }}">
-{%- endmacro %}
+{% extends "index.html" %}
 
-{%- macro textarea(name, value='', rows=10, cols=40) -%}
-    <textarea name="{{ name }}" rows="{{ rows }}" cols="{{ cols
-        }}">{{ value|e }}</textarea>
-{%- endmacro %}
+{% block app_container %}
+    {{ super() }}
+    {% for item, app_list in organized_list.items() %}
+        <div>
+            <p>{{ item }}</p>
+            {% comment %} load cards {% endcomment %}
+            {% for app in app_list %}
+                <p> app! {{ app }} </p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock app_container%}

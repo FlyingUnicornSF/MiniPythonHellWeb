@@ -22,7 +22,6 @@
         },false);
         
         function changeEventHandler(event) {
-            // You can use “this” to refer to the selected element.
             if(!event.target.value) alert('Please Select One');
             else window.location.search = '?organize_by='+event.target.value;
         }

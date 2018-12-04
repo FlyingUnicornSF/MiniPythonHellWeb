@@ -4,37 +4,62 @@
     <link rel="stylesheet" href={{ url_for('static', filename='style.css') }}>
 </head>
 <body>
-<p> yay! in Turkish means spring, coil, bow, arch, string, coil spring, etc</P>
-    <div>
-        Organize Apps By... https://stackoverflow.com/questions/22669342/passing-a-variable-into-python-from-jinja2-drop-down-menu
-        <select id="organized-by">
-            {% for activity in activities %}
-                <option value="{{ activity }}">{{ activity }}</option>
+    <nav>
+        <select name="organize-by" id="organizeBy-select">
+            {% for option in options %}
+            <option value="{{ option }}">{{ option }}</option>  
             {% endfor %}
         </select>
-    </div>
+    </nav>
+
+    <!-- <div id="block">
+        {% block app_container %}{% endblock app_container %}
+    </div> -->
     <div>
-        {% import 'OrganizeBy.html' as forms %}
-        <dl>
-            <dt>Username</dt>
-            <dd>{{ OrganizeBy.input('username') }}</dd>
-            <dt>Password</dt>
-            <dd>{{ OrganizeBy.input('password', type='password') }}</dd>
-        </dl>
-        <p>{{ OrganizeBy.textarea('comment') }}</p>
+        {% for item, app_list in organized_list.items() %}
+            <div>
+                <h1>{{ item }}</h1>
+                <div>
+                    {% for app in app_list %}
+                    {{ app|pprint }}
+                    <a href="https://narrative.kbase.us/#catalog/apps/{{ app.id }}">
+                        {% if app.icon %}
+                        <img clas="icon-img" src="https://kbase.us/services/narrative_method_store/{{ app.icon.url }}" >
+                        {% else %} 
+                        <img clas="icon-img" src=https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png><br>
+                        {% endif %} 
+                    </a>
+                </div>
+                    <p>Name: {{ app.name }} </p>
+                    <p>Module Name: {{ app.module_name }}</p>
+                    <p>Categories Name: {{ app.categories }}</p>
+                {% endfor %}
+        </div>
+    {% endfor %}
     </div>
-    <div>
+    <!-- <div>    
     {% for item in resp_json %}
         <div><a href="https://narrative.kbase.us/#catalog/apps/{{ item.id }}">
             {% if item.icon %}
             <img clas="icon-img" src="https://kbase.us/services/narrative_method_store/{{ item.icon.url }}" >
             {% else %} 
-            No Image!!!<br>
+            <img clas="icon-img" src=https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png><br>
             {% endif %} 
             Name: {{ item.name }}, Module Name: {{ item.module_name }} 
             </a>
         </div>
     {% endfor %}  
-    </div>
+    </div> -->
+    <script>
+        let dropdown = document.querySelector('#organizeBy-select');
+        document.addEventListener('DOMContentLoaded',function() {
+            document.querySelector('select[name="organize-by"]').onchange=changeEventHandler;
+        },false);
+        
+        function changeEventHandler(event) {
+            if(!event.target.value) alert('Please Select One');
+            else window.location.search = '?organize_by='+event.target.value;
+        }
+    </script>
 </body>
 </html>
