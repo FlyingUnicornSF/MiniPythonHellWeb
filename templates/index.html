@@ -15,27 +15,27 @@
     <!-- <div id="block">
         {% block app_container %}{% endblock app_container %}
     </div> -->
-    <div>
+    <div id='app-organized-list-container'>
         {% for item, app_list in organized_list.items() %}
-            <div>
+            <div id="app-list-container">
                 <h1>{{ item }}</h1>
+                {% for app in app_list %}
                 <div>
-                    {% for app in app_list %}
                     {{ app|pprint }}
                     <a href="https://narrative.kbase.us/#catalog/apps/{{ app.id }}">
                         {% if app.icon %}
-                        <img clas="icon-img" src="https://kbase.us/services/narrative_method_store/{{ app.icon.url }}" >
+                        <img class="icon-img" src="https://kbase.us/services/narrative_method_store/{{ app.icon.url }}" >
                         {% else %} 
-                        <img clas="icon-img" src=https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png><br>
+                        <img class="icon-img" src=https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png><br>
                         {% endif %} 
                     </a>
-                </div>
                     <p>Name: {{ app.name }} </p>
                     <p>Module Name: {{ app.module_name }}</p>
                     <p>Categories Name: {{ app.categories }}</p>
+                </div>
                 {% endfor %}
-        </div>
-    {% endfor %}
+            </div>
+        {% endfor %}
     </div>
     <!-- <div>    
     {% for item in resp_json %}
