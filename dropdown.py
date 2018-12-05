@@ -11,8 +11,10 @@ import json
 app = Flask(__name__)
 
 _kbase_url = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services')
+
 # Narrative Method Store URL needs rpc at the end. 
 # ref L43/44 https://github.com/kbase/narrative_method_store/blob/master/scripts/nms-listmethods.pl 
+
 _NarrativeMethodStore_url = _kbase_url + '/narrative_method_store/rpc'
 payload = {
     'id': 0,
@@ -20,9 +22,58 @@ payload = {
     'version': '1.1',
     'params': [{}]
 }
+
+# drop down menu options 
 options = ['Organize by', 'Category', 'Module', 'Developer']
 
-''' sort_app takes in an array, organize_by, which is derived from drop down menu and decoded response. 
+# Category ID/Category name map
+#TODO: update repo to get rid of this hard coded map.
+Category_names = {
+    'annotation': 'Genome Annotation',
+    'assembly': 'Genome Assembly',
+    'communities': 'Microbial Communities',
+    'comparative_genomics': 'Comparative Genomics',
+    'expression': 'Expression',
+    'metabolic_modeling': 'Metabolic Modeling',
+    'reads': 'Read Processing',
+    'sequence': 'Sequence Analysis',
+    'util': 'Utilities',
+    'inactive': 'Inactive Methods',
+    'viewers': 'Viewing Methods',
+    'importers': 'Importing Methods',
+    'featured_apps': 'Featured Apps',
+    'active': 'Active Methods', 
+    'Uncategorized' : 'Uncategorized Apps'
+}
+
+''' JS can break out of nested loops like this: https://stackoverflow.com/questions/183161/best-way-to-break-from-nested-loops-in-javascript
+    but Python can't. 
+
+    has_inactive takes in list of categories in an app and check if inactive is included in the list. 
+    if it doesn't, returns False. 
+
+    remove_inavtive takes in list of apps. 
+    Returns list of apps that does not have "inactive" in the category list.
+'''
+def has_inactive(categories):
+    
+    for category in categories:
+        if category == 'inactive':
+            break
+        return False
+
+def remove_inactive(app_list):
+
+    clean_app_list = []
+    for app in app_list:
+        if has_inactive(app['categories']) == False:
+            clean_app_list.append(app)
+
+    print(len(app_list), len(clean_app_list))
+    return clean_app_list
+
+''' 
+    sort_app function takes in an array, organize_by, which is derived from drop down menu. 
         organize_by is an array of either categories, modules, or developers. 
         app_list is an array of all apps.
     It returns a dictionary of {key = category/developer/module : value = app }.
@@ -50,7 +101,13 @@ def sort_app(organize_by, app_list):
                     # This shouldn't happen.
                     pass
         else:
-            # If the organized by item does not exisit in app information, then simply pass. 
+            # If the organized by item does not exisit in app information, then add to Uncategorized Apps list.
+            if 'Uncategorized' not in organized_app_list:
+                organized_app_list['Uncategorized'] = [app]
+            elif 'Uncategorized' in organized_app_list:
+                arr = organized_app_list.get('Uncategorized')
+                arr.append(app)
+                organized_app_list['Uncategorized'] = arr
             pass
     return organized_app_list
 
@@ -64,19 +121,47 @@ def get_apps():
     except ValueError as err:
         #TODO: Find document on set ValueError
         print(err)
+    # remove inactive apps.
+    clean_app_list = remove_inactive(app_list)
 
     # Get value from dropdown menue from url parameter
     option = request.args.get('organize_by')
+    
+    # Initialize organized app list.  organized_list is passed to index.html template. 
+    organized_list ={}
 
     if option == None:
         # When the page loads and drop down menue has not been used, return all of the apps non-sorted.
         organized_list = {
-            'All Apps:' : app_list
+            'All Apps:' : clean_app_list
         }
 
     elif option == "Category":
-        sorted_list = sort_app('categories', app_list)
-        #TODO: shape sorted_list. need to get GetCategoryParams for each from narrative method store
+        sorted_list = sort_app('categories', clean_app_list)
+        #shape sorted_list. need to get GetCategoryParams for each from narrative method store
+        ''' line 798 https://github.com/kbase/kbase-ui-plugin-catalog/blob/master/src/plugin/modules/widgets/kbaseCatalogBrowser.js 
+            line 82  self.categories = categoriesConfig.categories; 
+            categoriesConfig <- yaml!../data/categories.yml 
+            https://github.com/kbase/kbase-ui-plugin-catalog/blob/master/src/plugin/modules/data/categories.yml
+            Line 330 line 363 https://github.com/kbase/narrative_method_store/blob/master/src/us/kbase/narrativemethodstore/NarrativeMethodStoreServer.java
+            Line 588 https://github.com/kbase/narrative_method_store/blob/master/src/us/kbase/narrativemethodstore/db/github/LocalGitDB.java
+            Line 316
+            protected File getCategoriesDir() {
+            return new File(gitLocalPath, "categories");
+            }
+            https://github.com/kbase/narrative_method_specs/tree/develop/categories
+        
+        '''
+        # list_categories = requests.post(_NarrativeMethodStore_url, data=json.dumps({
+        #                                                                                 'id': 0,
+        #                                                                                 'method': 'NarrativeMethodStore.list_categories',
+        #                                                                                 'version': '1.1',
+        #                                                                                 'params': [{'load_methods': 0,
+        #                                                                                 'load_apps': 0,
+        #                                                                                 'load_types': 0,
+        #                                                                                 'tag': 'release'}]
+        #                                                                             }))
+        # print(list_categories.json())
         # for category in sorted_list:
         #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', category)
         #     category_info = requests.post(_NarrativeMethodStore_url, data=json.dumps({
@@ -86,19 +171,23 @@ def get_apps():
         #                                                                                 'params': [{'ids': [category]}]
         #                                                                             }))
         #     print(category_info.json())
-        category_info = requests.post(_NarrativeMethodStore_url, data=json.dumps({
-                                                                                    'id': 0,
-                                                                                    'method': 'NarrativeMethodStore.get_category',
-                                                                                    'version': '1.1',
-                                                                                    'params': [{'ids': ['sequence']}]
-                                                                                }))
-        print(category_info.json())
-        organized_list = sort_app('categories', app_list)    
+
+        for category in sorted_list:
+            # Skip Active and upload (it's not used??)
+            if (category != 'active') and (category != 'upload'):
+                cat_name = Category_names.get(category)
+                # in Python, if dict size changes like below during iteration, it will throw up.          
+                # sorted_list[cat_name] = sorted_list.pop(category).
+                # Work around: making a new dict. 
+                organized_list[cat_name] = sorted_list.get(category)
+     
     elif option == "Module":
-        organized_list = sort_app('module_name', app_list)
+        organized_list = sort_app('module_name', clean_app_list)
+
     elif option == "Developer":
         #TODO: shape sorted_list. need to get developer names for each from ??
-        organized_list = sort_app('authors', app_list)
+        organized_list = sort_app('authors', clean_app_list)
+
     else:
         print("this shouldn't happen!")
     

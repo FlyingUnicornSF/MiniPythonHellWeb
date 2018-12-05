@@ -12,3 +12,10 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! metabolic_modeling
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! upload
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! sequence
+
+{'inactive': {'id': 'inactive', 'name': 'Inactive Methods', 'ver': '1.0.0', 'tooltip': 'Methods that are out of date', 'description': '', 'parent_ids': []}, 
+'viewers': {'id': 'viewers', 'name': 'Viewing Methods', 'ver': '1.0.0', 'tooltip': 'Methods that show objects', 'description': '', 'parent_ids': []}, 
+'importers': {'id': 'importers', 'name': 'Importing Methods', 'ver': '1.0.0', 'tooltip': 'Methods that import objects', 'description': '', 'parent_ids': []}, 
+'error': {'id': 'error', 'name': 'Errors', 'ver': '1.0.0', 'tooltip': 'Methods with critical errors', 'description': '', 'parent_ids': []}, 
+'featured_apps': {'id': 'featured_apps', 'name': 'Featured Apps', 'ver': '1.0.0', 'tooltip': '', 'description': '', 'parent_ids': []}, 
+'active': {'id': 'active', 'name': 'Active Methods', 'ver': '1.0.0', 'tooltip': 'Methods that work', 'description': '', 'parent_ids': []}}
