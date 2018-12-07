@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href={{ url_for('static', filename='style.css') }}>
 </head>
-<body>
+<body class="kbase-ui">
     <nav>
         <select name="organize-by" id="organizeBy-select">
             {% for option in options %}
@@ -12,44 +13,50 @@
         </select>
     </nav>
 
-    <!-- <div id="block">
-        {% block app_container %}{% endblock app_container %}
-    </div> -->
-    <div id='app-organized-list-container'>
+    <div id="app-organized-list-container">
         {% for item, app_list in organized_list.items() %}
-            <div id="app-list-container">
-                <h1>{{ item }}</h1>
+            <div class="app-list-container">
+                <div class="sticky-header">{{ item }}</div>
+                <div class="app-list">
                 {% for app in app_list %}
-                <div>
-                    {{ app|pprint }}
                     <a href="https://narrative.kbase.us/#catalog/apps/{{ app.id }}">
-                        {% if app.icon %}
-                        <img class="icon-img" src="https://kbase.us/services/narrative_method_store/{{ app.icon.url }}" >
-                        {% else %} 
-                        <img class="icon-img" src=https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png><br>
-                        {% endif %} 
+                        <div class="app-card kbcb-hover">
+                            <!-- {{ app|pprint }} -->
+                            <div>
+                                {% if app.icon %}
+                                <img class="icon-img" src="https://kbase.us/services/narrative_method_store/{{ app.icon.url }}" >
+                                {% else %}
+                                <i class="far fa-question-circle"></i>
+                                <img class="icon-img" src="https://cdn3.iconfinder.com/data/icons/trico-rounded-squares/24/Rounded-Square-Question-512.png">
+                                {% endif %} 
+                                <p class="app-title"> {{ app.name }} </p>
+                            </div>
+                            <div class="module-name-tooltip">
+                                <a class="module-name" href="https://narrative.kbase.us/#catalog/modules/{{ app.module_name }}">{{ app.module_name }}</a>
+                                {% if app.subtitle != "none" %}
+                                <p>{{ app.subtitle }}</p>
+                                {% endif %}
+
+                                {% if app.tooltip is not none %}
+                                <p>Tool Tip: {{ app.tooltip }}
+                                {% endif %}
+                            </div>
+                            {% if  app.authors|length > 0 %}
+                            <div class="devs">
+                                By: 
+                                {% for developr in app.authors %}
+                                    <a class="dev-link" href = "https://narrative.kbase.us/#people/{{developr}}">{{ developr }}</a>{{ "," if not loop.last }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
                     </a>
-                    <p>Name: {{ app.name }} </p>
-                    <p>Module Name: {{ app.module_name }}</p>
-                    <p>Categories Name: {{ app.categories }}</p>
-                </div>
                 {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
-    <!-- <div>    
-    {% for item in resp_json %}
-        <div><a href="https://narrative.kbase.us/#catalog/apps/{{ item.id }}">
-            {% if item.icon %}
-            <img clas="icon-img" src="https://kbase.us/services/narrative_method_store/{{ item.icon.url }}" >
-            {% else %} 
-            <img clas="icon-img" src=https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png><br>
-            {% endif %} 
-            Name: {{ item.name }}, Module Name: {{ item.module_name }} 
-            </a>
-        </div>
-    {% endfor %}  
-    </div> -->
+                </div> <!--  End of class="app-list" -->
+            </div> <!-- End of class="app-list-container" -->
+        {% endfor %} 
+    </div> <!-- End of class="app-organized-list-container" -->
+
     <script>
         let dropdown = document.querySelector('#organizeBy-select');
         document.addEventListener('DOMContentLoaded',function() {

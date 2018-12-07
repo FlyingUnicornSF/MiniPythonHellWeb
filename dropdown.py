@@ -42,7 +42,8 @@ Category_names = {
     'viewers': 'Viewing Methods',
     'importers': 'Importing Methods',
     'featured_apps': 'Featured Apps',
-    'active': 'Active Methods', 
+    'active': 'Active Methods',
+    'upload': 'Upload Methods',
     'Uncategorized' : 'Uncategorized Apps'
 }
 
@@ -121,9 +122,12 @@ def get_apps():
     except ValueError as err:
         #TODO: Find document on set ValueError
         print(err)
+    
     # remove inactive apps.
     clean_app_list = remove_inactive(app_list)
 
+    # get url for all authors
+    
     # Get value from dropdown menue from url parameter
     option = request.args.get('organize_by')
     
@@ -138,7 +142,6 @@ def get_apps():
 
     elif option == "Category":
         sorted_list = sort_app('categories', clean_app_list)
-        #shape sorted_list. need to get GetCategoryParams for each from narrative method store
         ''' line 798 https://github.com/kbase/kbase-ui-plugin-catalog/blob/master/src/plugin/modules/widgets/kbaseCatalogBrowser.js 
             line 82  self.categories = categoriesConfig.categories; 
             categoriesConfig <- yaml!../data/categories.yml 
@@ -172,6 +175,7 @@ def get_apps():
         #                                                                             }))
         #     print(category_info.json())
 
+        #shape sorted_lisåt. need to get GetCategoryParams for each from narrative method store
         for category in sorted_list:
             # Skip Active and upload (it's not used??)
             if (category != 'active') and (category != 'upload'):
@@ -183,6 +187,7 @@ def get_apps():
      
     elif option == "Module":
         organized_list = sort_app('module_name', clean_app_list)
+
 
     elif option == "Developer":
         #TODO: shape sorted_list. need to get developer names for each from ??
