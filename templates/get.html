@@ -7,6 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    {{ resp_json }}
+    {% for app in resp_json %}
+    {{ app.name }}, {{ app.categories }}, {{ app.authors }}<br>
+    {% endfor %}   
+{{ resp_json }}
 </body>
 </html>

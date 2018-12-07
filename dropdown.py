@@ -59,7 +59,7 @@ Category_names = {
 def has_inactive(categories):
     
     for category in categories:
-        if category == 'inactive':
+        if category == 'inactive' or category == "viewers" or category == "importers":
             break
         return False
 
@@ -153,7 +153,24 @@ def get_apps():
             return new File(gitLocalPath, "categories");
             }
             https://github.com/kbase/narrative_method_specs/tree/develop/categories
-        
+        also 
+            https://github.com/kbase/kbase-ui-plugin-catalog/blob/master/src/plugin/modules/catalog_util.js
+            line 81:
+        this.skipApp = function(categories) {
+            for(var i=0; i<categories.length; i++) {
+                if(categories[i]=='inactive') {
+                    return true;
+                }
+                if(categories[i]=='viewers') {
+                    return true;
+                }
+                if(categories[i]=='importers') {
+                    return true;
+                }
+            }
+            return false;
+        };
+
         '''
         # list_categories = requests.post(_NarrativeMethodStore_url, data=json.dumps({
         #                                                                                 'id': 0,
