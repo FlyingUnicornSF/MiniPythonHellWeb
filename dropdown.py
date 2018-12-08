@@ -4,7 +4,7 @@
     https://stackoverflow.com/questions/11873576/how-to-get-value-from-dropdown-list
     
     '''
-from flask import Flask, url_for, request, render_template, jsonify, Markup, g
+from flask import Flask, url_for, request, render_template, jsonify, Markup
 import os
 import requests
 import json
@@ -24,7 +24,7 @@ payload = {
 }
 
 # drop down menu options 
-options = ['Organize by', 'Category', 'Module', 'Developer']
+options = ['Organize by', 'All apps', 'Category', 'Module', 'Developer']
 
 # Category ID/Category name map
 #TODO: update repo to get rid of this hard coded map.
@@ -137,7 +137,7 @@ def get_apps():
     if option == None:
         # When the page loads and drop down menue has not been used, return all of the apps non-sorted.
         organized_list = {
-            'All Apps:' : clean_app_list
+            'All apps' : clean_app_list
         }
 
     elif option == "Category":
