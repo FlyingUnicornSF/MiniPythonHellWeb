@@ -101,7 +101,7 @@ a.anchor-link  {
 }
 
 .scroll {
-    max-height: 80vh;
+    max-height: 75vh;
     overflow-y: scroll;
 }
 .app-list-container {

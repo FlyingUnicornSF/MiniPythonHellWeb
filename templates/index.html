@@ -91,7 +91,7 @@ The KBase App Catalog lists all of the currently available apps.">
         },false);
         
         function changeEventHandler(event) {
-            history.pushState('', document.title, window.location.pathname);
+            window.location.hash = "";
             if(!event.target.value) alert('Please Select One');
             if(event.target.value === "All apps"){
                 window.location.href = '/';
