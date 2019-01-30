@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+    crossorigin=""></script>
+ 
+</head>
+<body>
+    <div id="mapid" style = "height: 500px; background-color: pink;"></div>
+    <script>
+        let markers={{ markers|safe }};
+        let center = {{ center|safe }}
+        function initmap() {
+            let mymap = L.map('mapid').setView([center.lat, center.lng], 13);
+            
+            // create the tile layer with correct attribution
+            let osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            let osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+            let osm = new L.TileLayer(osmUrl, {minZoom: 3, maxZoom: 12, attribution: osmAttrib}).addTo(mymap);       
+            
+            let markersArr = [];
+            for( i = 0; i < markers.length; i++ ) {
+                let marker = L.marker([markers[i].lat, markers[i].lng]).addTo(mymap).bindPopup("<h3>" + markers[i].name + "</h3>" + markers[i].details);
+                //let marker = L.marker([markers[i].lat, markers[i].lng]).bindPopup("<h3>" + markers[i].name + "</h3>" + markers[i].details);
+                if( i === 0 ){
+                    marker.openPopup();
+                }
+               // markersArr.push(marker);
+                /**L.marker([markers[i].lat, markers[i].lng]).bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details).addTo(mymap);
+                let plotll = new L.LatLng(markers[i].lat,markers[i].lng, true);
+                let plotmark = new L.marker(plotll);
+                plotmark.data=markers[i];
+                map.addLayer(plotmark);*/
+            }
+            
+            /** let mymap = L.map('mapid', {
+                center: [[center.lat, center.lng]],
+                zoom: 13,
+                layers: [markersOnLayer]
+            }); 
+
+            let overlayMaps = {
+                "MarkersOnLayer": markersOnLayer
+            };
+            L.control.layers(overlayMaps).addTo(mymap); 
+            */
+        }
+        initmap();
+    </script>
+</body>
+</html>

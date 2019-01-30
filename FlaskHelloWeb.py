@@ -11,11 +11,13 @@ _kbase_url = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services')
 _catalog_url = _kbase_url + '/catalog'
 payload = {
     'id': 0,
-    'method': 'Catalog.list_basic_module_info',
+    'method': 'Catalog.get_module_version',
     'version': '1.1',
-    'params': [{'include_released': 1,
-                'include_unreleased': 1,
-                'include_disabled': 0}]
+    'params': [{   
+                    'module_name': 'kb_ReadsUtilities',
+                    'git_commit_hash' : '1b6d5c03cc5a96d867f1c1c061dc556bd2686ace',
+                    'include_compilation_report': 1
+                }]
 }
 
 
@@ -25,4 +27,4 @@ def root():
     resp_json = resp.json()
     if 'error' in resp_json:
         raise Exception('oh no!')
-    return render_template('index.html', resp_json=resp_json)
+    return render_template('simple.html', resp_json=resp_json)
